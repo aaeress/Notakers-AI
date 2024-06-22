@@ -1,0 +1,13 @@
+# byte-compiled / optimized / DLL files
+backend/__pycache__/
+
+# dependencies/testing/production
+frontend/node_modules
+frontend/coverage
+frontend/build
+
+# database & logs
+backend/*.json
+
+# env
+*env*

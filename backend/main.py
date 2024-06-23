@@ -2,6 +2,7 @@ from fastapi import FastAPI, Form, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List
+from note_model import NoteModel
 import json
 import os
 
@@ -16,10 +17,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 数据文件路径
+# Init Path
 DATA_FILE = "data.json"
 
-# 初始化数据文件
 if not os.path.exists(DATA_FILE):
     with open(DATA_FILE, "w") as file:
         json.dump([], file)
@@ -64,9 +64,16 @@ async def submit_note(
 ):
     print(f"Received note: {text}")
 
+    model_path = "gpt2"  # GPT-2 model identifier
+    model = NoteModel(model_id_or_path=model_path, optimize=True)
+    
+    raw_output = model.generate_output(text)
+    formatted_output = model.format_structured_output(raw_output)
+
+
     data = {
         "id": None,  # Placeholder for ID, will be set later
-        "text": text
+        "text": formatted_output
     }
 
     if os.path.exists(DATA_FILE):
